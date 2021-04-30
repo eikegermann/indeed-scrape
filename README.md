@@ -109,6 +109,7 @@ removes all data from the local cache.
 
 - So far only indeed.com
 - Filtering is limited, could have more options such as searching within job descriptions
+- The program tries to estimate how many jobs it is gathering, but the results seem to vary during the scraping process
 
 ### Next steps
 
