@@ -12,22 +12,73 @@
 
 This program requires the following Python packages
 
-- [xxx](https://link.com/)
+- requests-cache
+- pandas
+- numpy
+- typer
+- bs4
 
-They can be installed manually or using a pipenv with the supplied `Pipfile` by running the following
+They can be installed manually or using pip with the supplied `requirements.txt` by running the following
 
 ```bash
-cd todo_list
-pipenv install
+pip3 install -r requirements.txt
 ```
 
 ## Usage
 
-To use the program with pipenv simply enter a pipenv shell by running `pipenv shell` or prefix `pipenv run` before any Python command
+The program can be run in a virtual environment (I recommend conda) with the command line:
 
+```bash
+python scrape.py [task] [options]
+```
 ### Program options
 
-<description>
+The program's tasks and options can always be displayed with
+
+```bash
+python scrape.py --help
+```
+It currently supports 3 tasks as main functions:
+- scrape
+- filter
+- clear-cache
+
+#### Scrape 
+The scrape function requires a minimum of two arguments to run, a string with a job title and a location:
+
+```bash
+python scrape.py scrape --job "elephant washer" --location "Toowoomba QLD"
+```
+
+If the website has not been searched for this term at this location before, the program will request the information
+from the server, otherwise it will use the data cached previously in a local file.
+
+To access the server without replacing the local data cache, the option --no-cache can be added to the command:
+
+```bash
+python scrape.py scrape --job "elephant washer" --location "Toowoomba QLD" --no-cache
+```
+
+The scrape task stores all available information in a pandas data frame save locally as "temp_scrape_results.pkl".
+It can be accessed via e.g. a jupyter notebook and opened with pandas or used by the filter task to produce a screen
+output or json file with a selected subset of the results.
+
+#### Filter
+
+The filter task takes the last saved data frame and either displays it on screen or saves it to disk by a given name:
+
+```bash
+python scrape.py filter --save "job_results"
+```
+
+
+
+The clear-cache task
+```bash
+python scrape.py clear-cache
+```
+removes all data from the local cache.
+
 
 ## Pros, cons and next steps
 
