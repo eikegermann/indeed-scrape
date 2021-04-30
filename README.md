@@ -59,7 +59,7 @@ To access the server without replacing the local data cache, the option --no-cac
 python scrape.py scrape --job "elephant washer" --location "Toowoomba QLD" --no-cache
 ```
 
-The scrape task stores all available information in a pandas data frame save locally as "temp_scrape_results.pkl".
+The scrape task stores all available information (such as descriptions, age of job ad etc) in a pandas data frame save locally as "temp_scrape_results.pkl".
 It can be accessed via e.g. a jupyter notebook and opened with pandas or used by the filter task to produce a screen
 output or json file with a selected subset of the results.
 
@@ -71,7 +71,24 @@ The filter task takes the last saved data frame and either displays it on screen
 python scrape.py filter --save "job_results"
 ```
 
+The scraped results can be further sorted through by filtering 3 aspects:
+- job
+- rating
+- salary
 
+Job refers to a term in the job title given the by company offering the position.
+Rating refers to the rating of the prospective employer given by users of indeed.
+Salary refers to the minimum of a given range or the value given as the salary for the position.
+
+**NB**: Not all job offers have a rating or a salary proposal. The default value for these cases is 0.
+
+The filter values are passed in as strings in the same way as for the scrape task:
+
+```bash
+python scrape.py scrape --job "elephant" --rating "3" --salary "200000"
+```
+
+#### Clear-cache
 
 The clear-cache task
 ```bash
@@ -84,18 +101,19 @@ removes all data from the local cache.
 
 ### Pros
 
-- pro 1
-- pro 2
+- Local caching is fast for repetitive tasks
+- Storing temporary data frame in pickle format makes it compatible with other platforms
+- Automatically scrapes all available pages for job offers without clicks
 
 ### Cons
 
-- con 1
-- con 2
+- So far only indeed.com
+- Filtering is limited, could have more options such as searching within job descriptions
 
 ### Next steps
 
-- next step 1
-- next step 2
+- multiple todos across script have suggestions for possible extensions
+- add flexibility to search terms in scraping and filtering
 
 ## License
 
