@@ -2,4 +2,4 @@ pandas
 numpy
 typer
 requests-cache
-bs4
+beautifulsoup4
