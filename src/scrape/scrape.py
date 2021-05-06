@@ -1,15 +1,12 @@
 import requests_cache
 import requests
-import typer
 import re
 
 import pandas as pd
 import numpy as np
 
 from bs4 import BeautifulSoup
-from typing import (
-    Optional, Tuple
-)
+from typing import Tuple
 
 def query_website(base_url: str,
                   no_cache: bool) -> object:
@@ -78,7 +75,9 @@ def collate_jobs_data(job_results: list, num_results: int, return_data: bool = F
         # Job title, company and location and age of ad are available for all entries by default
         job_title.append(entry.find("h2", class_=["title"]).text)
         company.append(entry.find("span", class_=["company"]).text)
-        location.append(entry.find("span", class_=["location"]).text)
+        # Some locations are not accessible through a span tag, but all location blocks have a location attribute
+        loc_block = entry.find("div", class_=["recJobLoc"])
+        location.append(loc_block.attrs['data-rc-loc'])
         age_of_ad.append(entry.find("span", class_=["date"]).text)
 
         # Ratings, descriptions and salaries are not always available
