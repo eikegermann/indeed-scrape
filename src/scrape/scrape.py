@@ -13,6 +13,15 @@ from typing import (
 
 def query_website(base_url: str,
                   no_cache: bool) -> object:
+    """
+    Query a website for scrape results
+    Args:
+        base_url: str website url
+        no_cache: bool whether or not to use a cached version of the site, if it exists
+
+    Returns:
+        result: response object with reply from website
+    """
     headers = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:86.0) Gecko/20100101 Firefox/86.0'}
     # Run request and gather all possible results
     print("Attempting web scrape...")
@@ -25,6 +34,15 @@ def query_website(base_url: str,
 
 
 def extract_job_offers(result: object) -> Tuple[list, int]:
+    """
+    Take response object from a request to Indeed and extract job offers on this page as well as total number of offers.
+    Args:
+        result: response object
+
+    Returns:
+        job_results: list, list of response elements parsed with beautiful soup
+        num_results: int, total number of job offers available
+    """
     soup = BeautifulSoup(result.text, features='html.parser')
     num_results = soup.find("div", {"id": "searchCountPages"})
     num_results = int(re.findall("\d+(?=\sjob)", num_results.text)[0])
@@ -33,6 +51,18 @@ def extract_job_offers(result: object) -> Tuple[list, int]:
 
 
 def collate_jobs_data(job_results: list, num_results: int) -> None:
+    """
+    Parses a list of job results and extracts the specific title used by the employer, the company offering the position
+    as well as the location, the age of the ad and, if available, the employer's rating, a more detailed job description
+    and a minimum salary.
+    Args:
+        job_results: list list of html objects with job offers in Indeed format
+        num_results: int number of total job offers
+
+    Returns:
+        Saves a pandas data frame as "temp_scrape_results.pkl" for use with another application, either externally or
+        using the "filter" function
+    """
     # Collate job data in dataframe
     # TODO: Find nicer way to iterate
     job_title = []
