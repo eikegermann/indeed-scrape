@@ -50,7 +50,7 @@ def extract_job_offers(result: object) -> Tuple[list, int]:
     return job_results, num_results
 
 
-def collate_jobs_data(job_results: list, num_results: int) -> None:
+def collate_jobs_data(job_results: list, num_results: int, return_data: bool = False) -> None:
     """
     Parses a list of job results and extracts the specific title used by the employer, the company offering the position
     as well as the location, the age of the ad and, if available, the employer's rating, a more detailed job description
@@ -112,3 +112,25 @@ def collate_jobs_data(job_results: list, num_results: int) -> None:
     # Save resulting frame for use with filter
     all_results.to_pickle("temp_scrape_results.pkl")
     print("Done!")
+    if return_data:
+        return all_results
+
+
+def filter_results(job, rating, salary, save):
+    # Open existing results dataframe
+    results = pd.read_pickle("temp_scrape_results.pkl")
+    # Filter by values
+    if job:
+        results = results[results["Job Title"].str.contains(job)]
+    if rating:
+        results = results[results["Rating"] >= int(rating)]
+    if salary:
+        results = results[results["Salary"] >= int(salary)]
+    if not save:
+        print(results)
+    else:
+        if ".json" in save:
+            filename = save
+        else:
+            filename = save + ".json"
+        results.to_json(filename, orient="index")

@@ -1,12 +1,10 @@
 import requests_cache
 import typer
 
-import pandas as pd
-
 from typing import Optional
 
 from src.scrape.scrape import (
-    query_website, extract_job_offers, collate_jobs_data
+    query_website, extract_job_offers, collate_jobs_data, filter_results
 )
 
 # Set up caching for use with all requests as default
@@ -70,25 +68,8 @@ def filter(job: Optional[str] = typer.Option(None, help="Search string to filter
     Returns:
         None
     """
-    # Open existing results dataframe
-    results = pd.read_pickle("temp_scrape_results.pkl")
+    filter_results(job, rating, salary, save)
 
-    # Filter by values
-    if job:
-        results = results[results["Job Title"].str.contains(job)]
-    if rating:
-        results = results[results["Rating"] >= int(rating)]
-    if salary:
-        results = results[results["Salary"] >= int(salary)]
-
-    if not save:
-        print(results)
-    else:
-        if ".json" in save:
-            filename = save
-        else:
-            filename = save + ".json"
-        results.to_json(filename, orient="index")
 
 @scrape_app.command()
 def clear_cache():
